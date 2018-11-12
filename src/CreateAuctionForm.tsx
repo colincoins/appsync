@@ -5,9 +5,9 @@ import Button from '@material-ui/core/Button';
 import { Mutation } from 'react-apollo';
 import { createAuction } from './graphql/mutations';
 import gql from 'graphql-tag';
-import { CreateAuctionMutation, CreateAuctionMutationVariables } from './API';
+import { CreateAuctionMutation, CreateAuctionMutationVariables, ListAuctionsQuery } from './API';
 import { listAuctions } from './graphql/queries';
-
+import { produce } from 'immer';
 interface FormValues {
   name: string
   price: number  
@@ -27,10 +27,28 @@ export const CreateAuctionForm = () => {
                   price
                 }
               },
-              refetchQueries: [{query: gql(listAuctions), variables: { limit: 100 }}]
+
+              // Idea is to use Mutation response to update the cache.
+              // Because what we get returned is a new auction & we can append to that end of our cache.
+              update: (store, { data }) => {
+                if (!data || !data.createAuction) {
+                  return;
+                }
+
+                // Get current items in the cache.
+                const auctions = store.readQuery<ListAuctionsQuery>({ query: gql(listAuctions), variables: { limit: 100 }})
+                store.writeQuery({
+                  query: gql(listAuctions),
+                  variables: { limit: 100 },
+                  data: produce(auctions, draftState => {
+                    draftState!.listAuctions!.items!.unshift(
+                      data.createAuction
+                    )
+                  })
+                })
+              }
             })
             resetForm();
-            console.log(response);
           }}
         >
           {({ values, handleChange, handleSubmit }) => (
