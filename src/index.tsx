@@ -20,9 +20,7 @@ const client = new AWSAppSyncClient({
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <Rehydrated>
-      <App />
-    </Rehydrated>
+    <App />
   </ApolloProvider>,
   document.getElementById('root')
 );

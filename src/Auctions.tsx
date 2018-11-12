@@ -7,7 +7,7 @@ import { AuctionCard } from './AuctionCard';
 
 export const Auctions = () => {
   return (
-    <Query<ListAuctionsQuery, ListAuctionsQueryVariables> query={gql(listAuctions)} variables={{ limit: 4}}>
+    <Query<ListAuctionsQuery, ListAuctionsQueryVariables> query={gql(listAuctions)} variables={{ limit: 100 }}>
       {({ data, loading }) => {
         if (loading || !data || !data.listAuctions || !data.listAuctions.items) {
           return null;

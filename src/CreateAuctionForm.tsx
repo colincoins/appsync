@@ -6,6 +6,7 @@ import { Mutation } from 'react-apollo';
 import { createAuction } from './graphql/mutations';
 import gql from 'graphql-tag';
 import { CreateAuctionMutation, CreateAuctionMutationVariables } from './API';
+import { listAuctions } from './graphql/queries';
 
 interface FormValues {
   name: string
@@ -17,7 +18,7 @@ export const CreateAuctionForm = () => {
       {(createAuction) => (
         <Formik<FormValues> 
           initialValues={{ name: '', price: 0}}
-          onSubmit={async ({ name, price }) => {
+          onSubmit={async ({ name, price }, { resetForm }) => {
             // call mutation
             const response = await createAuction({
               variables: {
@@ -25,9 +26,10 @@ export const CreateAuctionForm = () => {
                   name,
                   price
                 }
-              }
+              },
+              refetchQueries: [{query: gql(listAuctions), variables: { limit: 100 }}]
             })
-
+            resetForm();
             console.log(response);
           }}
         >
