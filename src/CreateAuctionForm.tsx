@@ -28,8 +28,17 @@ export const CreateAuctionForm = () => {
                 }
               },
 
+              // Optimistic Response fires right away & then shows a change in the UI & then waits for the mutation to come back & then updates the UI again.
+              optimisticResponse: {
+                createAuction: {
+                  id: '-1',
+                  name,
+                  price,
+                }
+              },
               // Idea is to use Mutation response to update the cache.
               // Because what we get returned is a new auction & we can append to that end of our cache.
+              // Update waits for the mutation to be complete & then shows the change in the UI.
               update: (store, { data }) => {
                 if (!data || !data.createAuction) {
                   return;
