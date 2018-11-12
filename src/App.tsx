@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { withAuthenticator } from 'aws-amplify-react';
 import { CreateAuctionForm } from './CreateAuctionForm';
 import { Auctions } from './Auctions';
 
@@ -13,4 +14,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default withAuthenticator(App);
